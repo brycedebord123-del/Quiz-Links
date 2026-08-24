@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bryce Debord | Campaign Countdown</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;font-family:Arial,Helvetica,sans-serif;background:#06182f;color:#fff;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px}
+.wrap{width:min(620px,100%);text-align:center}
+.eyebrow{font-size:12px;letter-spacing:3px;font-weight:800;opacity:.7}
+.logo{font-size:clamp(38px,10vw,64px);font-weight:900;letter-spacing:-3px;margin:8px 0 4px}
+.sub{opacity:.72;margin-bottom:28px}
+.card{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.16);border-radius:24px;padding:28px;box-shadow:0 20px 60px rgba(0,0,0,.25)}
+.progress{height:7px;background:rgba(255,255,255,.14);border-radius:20px;overflow:hidden;margin-bottom:26px}
+.bar{height:100%;width:33.33%;background:#fff;transition:width .35s ease}
+h2{font-size:26px;margin:10px 0}
+.choices{display:grid;gap:11px;margin-top:22px}
+button{font:inherit}
+.choice,.mainbtn{min-height:50px;border:0;border-radius:13px;padding:13px 16px;font-weight:800;cursor:pointer}
+.choice{background:#fff;color:#092044}
+.choice:hover,.mainbtn:hover{transform:translateY(-2px)}
+.choice:active,.mainbtn:active{transform:translateY(0)}
+.message{min-height:24px;margin-top:14px;font-weight:700}
+.shake{animation:shake .25s}
+.hidden{display:none}
+.unlock{font-size:clamp(30px,8vw,48px);font-weight:900;line-height:1.03;margin:12px 0}
+.code{font-family:monospace;font-size:clamp(15px,4vw,20px);background:rgba(0,0,0,.22);padding:14px;border-radius:11px;margin:20px 0}
+.mainbtn{display:inline-flex;align-items:center;justify-content:center;text-decoration:none;background:#fff;color:#092044}
+.small{font-size:13px;opacity:.7}
+</style>
+</head>
+<body>
+<main class="wrap">
+  <div class="eyebrow">BRYCE DEBORD • CAMPAIGN HQ</div>
+  <div class="logo">THE COUNTDOWN</div>
+  <div class="sub">The website is locked. Earn your way in.</div>
+
+  <section class="card" id="game">
+    <div class="progress"><div class="bar" id="bar"></div></div>
+    <div id="question"></div>
+    <div class="choices" id="choices"></div>
+    <div class="message" id="message" aria-live="polite"></div>
+  </section>
+
+  <section class="card hidden" id="win">
+    <div class="eyebrow">ACCESS GRANTED</div>
+    <div class="unlock">BRYCE'S WEBSITE<br>IS LIVE.</div>
+    <div class="code">MAKE 10TH GRADE GREAT AGAIN</div>
+    <div class="small">The next move is yours.</div>
+    <br>
+    <a class="mainbtn" href="https://brycedebord123-del.github.io/M10GA/#about">
+      ENTER CAMPAIGN HQ →
+    </a>
+  </section>
+</main>
+
+<script>
+const questions=[
+  {round:"ROUND 1",question:"What grade is Bryce running for?",answers:["8th Grade","9th Grade","10th Grade","12th Grade"],correct:2},
+  {round:"ROUND 2",question:"Complete the campaign phrase:",answers:["Make School Great Again","Make 10th Grade Great Again","Make Lunch Great Again","Make Homework Great Again"],correct:1},
+  {round:"FINAL ROUND",question:"What happens next?",answers:["The campaign ends","Nothing","The website goes LIVE","Try again next year"],correct:2}
+];
+
+let current=0;
+
+const game=document.getElementById("game");
+const win=document.getElementById("win");
+const question=document.getElementById("question");
+const choices=document.getElementById("choices");
+const message=document.getElementById("message");
+const bar=document.getElementById("bar");
+
+function render(){
+  const item=questions[current];
+  bar.style.width=((current+1)/questions.length*100)+"%";
+  question.innerHTML=
+    '<div class="eyebrow">'+item.round+'</div>'+
+    '<h2>'+item.question+'</h2>';
+  choices.innerHTML="";
+  message.textContent="";
+
+  item.answers.forEach((answer,index)=>{
+    const button=document.createElement("button");
+    button.className="choice";
+    button.type="button";
+    button.textContent=answer;
+    button.addEventListener("click",()=>answerQuestion(index));
+    choices.appendChild(button);
+  });
+}
+
+function answerQuestion(index){
+  if(index!==questions[current].correct){
+    message.textContent="Not quite. Try again.";
+    game.classList.remove("shake");
+    void game.offsetWidth;
+    game.classList.add("shake");
+    return;
+  }
+
+  current++;
+
+  if(current===questions.length){
+    game.classList.add("hidden");
+    win.classList.remove("hidden");
+    return;
+  }
+
+  render();
+}
+
+render();
+</script>
+</body>
+</html>
